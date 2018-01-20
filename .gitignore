@@ -13,3 +13,12 @@ dist
 rpmbuild
 *.log*
 build.py
+
+# virtualenv
+bin
+include
+lib
+pip-selfcheck.json
+
+# coverage
+man
