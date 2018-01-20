@@ -75,6 +75,32 @@ class AuthTestCase(unittest.TestCase):
         response = self.client.delete('/key/' + rw_api_key, headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
+    def test_readwrite_key_without_authorization_header(self):
+        test_config = {
+            'TESTING': True,
+            'AUTH_REQUIRED': False,
+            'CUSTOMER_VIEWS': True,
+            'ADMIN_USERS': ['admin@alerta.io'],
+            'ALLOWED_EMAIL_DOMAINS': ['bonaparte.fr', 'debeauharnais.fr']
+        }
+        app = create_app(test_config)
+        client = app.test_client()
+
+        headers = {
+            'Content-type': 'application/json'
+        }
+
+        payload = {
+            'user': 'rw-demo-key',
+            'type': 'read-write'
+        }
+
+        response = client.post('/key', data=json.dumps(payload), content_type='application/json', headers=headers)
+
+        # AUTH_REQUIRED if it's false
+        # And we don't provide an API key, the error message should be a bad request error
+        self.assertEqual(response.status_code, 400)
+
     def test_readonly_key(self):
 
         payload = {

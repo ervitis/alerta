@@ -23,6 +23,9 @@ def create_key():
         key.user = key.user or g.user
         key.customer = key.customer or g.get('customer', None)
     else:
+        if 'Authorization' not in request.headers:
+            raise ApiError('Authorization header needed in the request', 400)
+
         key.user = g.user
         key.customer = g.get('customer', None)
 
