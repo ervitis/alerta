@@ -2,7 +2,7 @@
 import json
 import unittest
 
-from alerta.app import create_app, db
+from alerta.app import create_app, db, plugins as pl
 from alerta.models.key import ApiKey
 
 
@@ -43,6 +43,9 @@ class BlackoutsTestCase(unittest.TestCase):
             self.admin_api_key.create()
             self.customer_api_key.create()
 
+        from alerta.plugins.blackout import BlackoutHandler
+        pl.plugins['test1'] = BlackoutHandler()
+
     def tearDown(self):
         db.destroy()
 
@@ -66,7 +69,7 @@ class BlackoutsTestCase(unittest.TestCase):
 
         # suppress alert
         response = self.client.post('/alert', data=json.dumps(self.alert), headers=self.headers)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 202)
 
         self.headers = {
             'Authorization': 'Key %s' % self.customer_api_key.key,
@@ -75,7 +78,7 @@ class BlackoutsTestCase(unittest.TestCase):
 
         # create alert
         response = self.client.post('/alert', data=json.dumps(self.alert), headers=self.headers)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 202)
 
 
         self.headers = {
