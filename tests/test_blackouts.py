@@ -66,7 +66,7 @@ class BlackoutsTestCase(unittest.TestCase):
 
         # suppress alert
         response = self.client.post('/alert', data=json.dumps(self.alert), headers=self.headers)
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 201)
 
         self.headers = {
             'Authorization': 'Key %s' % self.customer_api_key.key,
@@ -75,7 +75,7 @@ class BlackoutsTestCase(unittest.TestCase):
 
         # create alert
         response = self.client.post('/alert', data=json.dumps(self.alert), headers=self.headers)
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 201)
 
 
         self.headers = {
