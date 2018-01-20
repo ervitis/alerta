@@ -29,4 +29,4 @@ install:
   - "pip install -r requirements.txt"
 
 # command to run tests
-script: nosetests tests/*
+script: nosetests --verbosity=3 tests/*
