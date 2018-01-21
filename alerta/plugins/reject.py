@@ -26,7 +26,7 @@ class RejectPolicy(PluginBase):
             LOG.warning("[POLICY] Alert environment must be one of %s", ', '.join(ALLOWED_ENVIRONMENTS))
             raise RejectException("[POLICY] Alert environment must be one of %s" % ', '.join(ALLOWED_ENVIRONMENTS))
 
-        if not alert.service:
+        if not alert.service or len(alert.service) == 0:
             LOG.warning("[POLICY] Alert must define a service")
             raise RejectException("[POLICY] Alert must define a service")
 

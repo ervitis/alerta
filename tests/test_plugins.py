@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from alerta.app import create_app, db, plugins
 from alerta.plugins import PluginBase
+from alerta.plugins.reject import RejectPolicy
 
 
 class PluginsTestCase(unittest.TestCase):
@@ -35,7 +36,7 @@ class PluginsTestCase(unittest.TestCase):
             'event': 'node_marginal',
             'resource': self.resource,
             'environment': 'Production',
-            'service': ['Network'],  # alert will be accepted because service not defined
+            'service': ['Network'],  # alert will be accepted because service is defined
             'severity': 'warning',
             'correlate': ['node_down', 'node_marginal', 'node_up'],
             'tags': ['three', 'four']
@@ -103,10 +104,12 @@ class PluginsTestCase(unittest.TestCase):
         self.assertEqual(data['alert']['history'][-1]['text'], 'input-plugin1-plugin3')
 
 
-class TestPlugin1(PluginBase):
+class TestPlugin1(RejectPolicy):
 
     def pre_receive(self, alert):
         alert.attributes['aaa'] = 'pre1'
+        super(TestPlugin1, self).pre_receive(alert)
+
         return alert
 
     def post_receive(self, alert):
